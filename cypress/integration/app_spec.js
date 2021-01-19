@@ -316,35 +316,24 @@ describe('TodoMVC - React', function () {
       cy.get('@secondTodo').should('not.have.class', 'completed')
     })
 
-    it('should allow me to edit an item', function () {
-      cy.createDefaultTodos().as('todos')
+      it('should allow me to edit an item', function () {
+          cy.createDefaultTodos().as('todos')
 
-      cy.get('@todos')
-      .eq(1)
-      .as('secondTodo')
-      // TODO: fix this, dblclick should
-      // have been issued to label
-      .find('label')
-      .dblclick()
+          cy.todo(1).find('label').dblclick()
 
-      // clear out the inputs current value
-      // and type a new value
-      cy.get('@secondTodo')
-      .find('.edit')
-      .clear()
-      .type('buy some sausages')
-      .type('{enter}')
+          // clear out the inputs current value
+          // and type a new value
+          cy.todo(1)
+              .find('.edit')
+              .clear()
+              .type('buy some sausages')
+              .type('{enter}')
 
-      // explicitly assert about the text value
-      cy.get('@todos')
-      .eq(0)
-      .should('contain', TODO_ITEM_ONE)
-
-      cy.get('@secondTodo').should('contain', 'buy some sausages')
-      cy.get('@todos')
-      .eq(2)
-      .should('contain', TODO_ITEM_THREE)
-    })
+          // explicitly assert about the text value
+          cy.todo(0).should('contain', TODO_ITEM_ONE)
+          cy.todo(1).should('contain', 'buy some sausages')
+          cy.todo(2).should('contain', TODO_ITEM_THREE)
+      })
   })
 
   context('Editing', function () {
