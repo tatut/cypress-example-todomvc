@@ -64,6 +64,15 @@ Cypress.Commands.add("todo", function(num) {
     return cy.get(".todo-list li").eq(num)
 })
 
+Cypress.Commands.add("assertTodos", function(textArray) {
+    // wait for websocket, this would be better with
+    // actually listening for messages, but the editing
+    // round trips should resolve within 100ms
+    cy.wait(100)
+    for(var i=0; i<textArray.length; i++) {
+        cy.todo(i).find('label').should("contain", textArray[i])
+    }
+})
 
 Cypress.Commands.add('createTodo', function (todo) {
 

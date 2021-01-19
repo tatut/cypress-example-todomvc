@@ -330,9 +330,9 @@ describe('TodoMVC - React', function () {
               .type('{enter}')
 
           // explicitly assert about the text value
-          cy.todo(0).should('contain', TODO_ITEM_ONE)
-          cy.todo(1).should('contain', 'buy some sausages')
-          cy.todo(2).should('contain', TODO_ITEM_THREE)
+          cy.assertTodos([TODO_ITEM_ONE,
+                          'buy some sausages',
+                          TODO_ITEM_THREE])
       })
   })
 
@@ -361,53 +361,30 @@ describe('TodoMVC - React', function () {
     })
 
     it('should save edits on blur', function () {
-      cy.get('@todos')
-      .eq(1)
-      .as('secondTodo')
-      .find('label')
-      .dblclick()
+        cy.todo(1).find('label').dblclick()
 
-      cy.get('@secondTodo')
-      .find('.edit')
-      .clear()
-      .type('buy some sausages')
-      // we can just send the blur event directly
-      // to the input instead of having to click
-      // on another button on the page. though you
-      // could do that its just more mental work
-      .blur()
+        cy.todo(1)
+            .find('.edit')
+            .clear().type('buy some sausages')
+            .blur()
 
-      cy.get('@todos')
-      .eq(0)
-      .should('contain', TODO_ITEM_ONE)
-
-      cy.get('@secondTodo').should('contain', 'buy some sausages')
-      cy.get('@todos')
-      .eq(2)
-      .should('contain', TODO_ITEM_THREE)
+        cy.assertTodos([TODO_ITEM_ONE,
+                        'buy some sausages',
+                        TODO_ITEM_THREE])
     })
 
     it('should trim entered text', function () {
-      cy.get('@todos')
-      .eq(1)
-      .as('secondTodo')
-      .find('label')
-      .dblclick()
+        cy.todo(1).find('label').dblclick()
 
-      cy.get('@secondTodo')
-      .find('.edit')
-      .clear()
-      .type('    buy some sausages    ')
-      .type('{enter}')
+        cy.todo(1)
+            .find('.edit')
+            .clear()
+            .type('    buy some sausages    ')
+            .type('{enter}')
 
-      cy.get('@todos')
-      .eq(0)
-      .should('contain', TODO_ITEM_ONE)
-
-      cy.get('@secondTodo').should('contain', 'buy some sausages')
-      cy.get('@todos')
-      .eq(2)
-      .should('contain', TODO_ITEM_THREE)
+        cy.assertTodos([TODO_ITEM_ONE,
+                        'buy some sausages',
+                       TODO_ITEM_THREE])
     })
 
     it('should remove the item if an empty text string was entered', function () {
@@ -437,17 +414,7 @@ describe('TodoMVC - React', function () {
       .clear()
       .type('foo{esc}')
 
-      cy.get('@todos')
-      .eq(0)
-      .should('contain', TODO_ITEM_ONE)
-
-      cy.get('@todos')
-      .eq(1)
-      .should('contain', TODO_ITEM_TWO)
-
-      cy.get('@todos')
-      .eq(2)
-      .should('contain', TODO_ITEM_THREE)
+        cy.assertTodos([TODO_ITEM_ONE, TODO_ITEM_TWO, TODO_ITEM_THREE])
     })
   })
 
@@ -505,6 +472,9 @@ describe('TodoMVC - React', function () {
     })
   })
 
+    // Persistence to localstorage doesn't really make sense
+    // for a server side rendered app
+    /*
   context('Persistence', function () {
     it('should persist its data', function () {
       // mimicking TodoMVC tests
@@ -529,7 +499,7 @@ describe('TodoMVC - React', function () {
       .reload()
       .then(testState)
     })
-  })
+  })*/
 
   context('Routing', function () {
     // New commands used here:
@@ -562,24 +532,22 @@ describe('TodoMVC - React', function () {
     })
 
     it('should respect the back button', function () {
-      cy.get('@todos')
-      .eq(1)
-      .find('.toggle')
-      .check()
+      cy.todo(1).find('.toggle').check()
 
-      cy.get('.filters')
-      .contains('Active')
-      .click()
+      cy.get('.filters').contains('Active').click()
 
-      cy.get('.filters')
-      .contains('Completed')
-      .click()
+      cy.get('.filters').contains('Completed').click()
 
-      cy.get('@todos').should('have.length', 1)
-      cy.go('back')
-      cy.get('@todos').should('have.length', 2)
-      cy.go('back')
-      cy.get('@todos').should('have.length', 3)
+        cy.hash().should('equal','#/completed')
+        cy.todos().should('have.length', 1)
+        cy.go('back')
+
+        cy.hash().should('equal','#/active')
+        cy.todos().should('have.length', 2)
+        cy.go('back')
+
+        cy.hash().should('equal','')
+        cy.todos().should('have.length', 3)
     })
 
     it('should allow me to display completed items', function () {
@@ -632,6 +600,8 @@ describe('TodoMVC - React', function () {
     })
   })
 
+    // this axe is related to some npm lib, which we don't have
+    /*
   context('Contrast', () => {
     it('has good contrast when empty', () => {
       cy.addAxeCode()
@@ -666,4 +636,5 @@ describe('TodoMVC - React', function () {
       })
     })
   })
+    */
 })
