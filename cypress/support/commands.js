@@ -54,6 +54,17 @@ Cypress.Commands.add('createDefaultTodos', function () {
   })
 })
 
+// Return all todos
+Cypress.Commands.add("todos", function() {
+    return cy.get(".todo-list li")
+})
+
+// Return specific todo
+Cypress.Commands.add("todo", function(num) {
+    return cy.get(".todo-list li").eq(num)
+})
+
+
 Cypress.Commands.add('createTodo', function (todo) {
 
   let cmd = Cypress.log({
