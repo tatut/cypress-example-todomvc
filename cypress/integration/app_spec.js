@@ -261,7 +261,7 @@ describe('TodoMVC - React', function () {
       cy.get('@toggleAll').should('not.be.checked')
 
       // reference the first todo again and now toggle it
-      cy.get('@firstTodo')
+      cy.todo(0)
       .find('.toggle')
       .check()
 
@@ -282,38 +282,36 @@ describe('TodoMVC - React', function () {
       cy.createTodo(TODO_ITEM_ONE).as('firstTodo')
       cy.createTodo(TODO_ITEM_TWO).as('secondTodo')
 
-      cy.get('@firstTodo')
+      cy.todo(0)
       .find('.toggle')
       .check()
 
-      cy.get('@firstTodo').should('have.class', 'completed')
+      cy.todo(0).should('have.class', 'completed')
 
-      cy.get('@secondTodo').should('not.have.class', 'completed')
-      cy.get('@secondTodo')
+      cy.todo(1).should('not.have.class', 'completed')
+      cy.todo(1)
       .find('.toggle')
       .check()
 
-      cy.get('@firstTodo').should('have.class', 'completed')
-      cy.get('@secondTodo').should('have.class', 'completed')
+      cy.todo(0).should('have.class', 'completed')
+      cy.todo(1).should('have.class', 'completed')
     })
 
     it('should allow me to un-mark items as complete', function () {
       cy.createTodo(TODO_ITEM_ONE).as('firstTodo')
       cy.createTodo(TODO_ITEM_TWO).as('secondTodo')
 
-      cy.get('@firstTodo')
-      .find('.toggle')
-      .check()
+        cy.todo(0).find('.toggle').check()
 
-      cy.get('@firstTodo').should('have.class', 'completed')
-      cy.get('@secondTodo').should('not.have.class', 'completed')
+      cy.todo(0).should('have.class', 'completed')
+      cy.todo(1).should('not.have.class', 'completed')
 
-      cy.get('@firstTodo')
+      cy.todo(0)
       .find('.toggle')
       .uncheck()
 
-      cy.get('@firstTodo').should('not.have.class', 'completed')
-      cy.get('@secondTodo').should('not.have.class', 'completed')
+      cy.todo(0).should('not.have.class', 'completed')
+      cy.todo(1).should('not.have.class', 'completed')
     })
 
       it('should allow me to edit an item', function () {
@@ -351,11 +349,11 @@ describe('TodoMVC - React', function () {
       .find('label')
       .dblclick()
 
-      cy.get('@secondTodo')
+      cy.todo(1)
       .find('.toggle')
       .should('not.be.visible')
 
-      cy.get('@secondTodo')
+      cy.todo(1)
       .find('label')
       .should('not.be.visible')
     })
@@ -394,7 +392,7 @@ describe('TodoMVC - React', function () {
       .find('label')
       .dblclick()
 
-      cy.get('@secondTodo')
+      cy.todo(1)
       .find('.edit')
       .clear()
       .type('{enter}')
@@ -409,7 +407,7 @@ describe('TodoMVC - React', function () {
       .find('label')
       .dblclick()
 
-      cy.get('@secondTodo')
+      cy.todo(1)
       .find('.edit')
       .clear()
       .type('foo{esc}')
@@ -480,18 +478,18 @@ describe('TodoMVC - React', function () {
       // mimicking TodoMVC tests
       // by writing out this function
       function testState () {
-        cy.get('@firstTodo')
+        cy.todo(0)
         .should('contain', TODO_ITEM_ONE)
         .and('have.class', 'completed')
 
-        cy.get('@secondTodo')
+        cy.todo(1)
         .should('contain', TODO_ITEM_TWO)
         .and('not.have.class', 'completed')
       }
 
       cy.createTodo(TODO_ITEM_ONE).as('firstTodo')
       cy.createTodo(TODO_ITEM_TWO).as('secondTodo')
-      cy.get('@firstTodo')
+      cy.todo(0)
       .find('.toggle')
       .check()
       .then(testState)
